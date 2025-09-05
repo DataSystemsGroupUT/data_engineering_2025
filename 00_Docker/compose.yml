@@ -1,0 +1,25 @@
+# version: '3.8'
+
+services:
+  py:
+    image: python:3.12.5-bookworm
+    container_name: my_python
+    environment:
+      MY_SUPER_VARIABLE: superduper2
+    stdin_open: true
+    tty: true 
+    networks:
+      - my_network
+  html:
+    image: nginx:1.27.1
+    container_name: my_html
+    ports:
+      - 8080:80
+    restart: always
+    volumes:
+      - ../mnt/00_nginx/:/usr/share/nginx/html/
+    networks:
+      - my_network
+
+networks:
+  my_network:
