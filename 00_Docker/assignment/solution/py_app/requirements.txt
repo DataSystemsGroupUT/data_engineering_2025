@@ -1,0 +1,6 @@
+requests>=2.32.3
+sqlalchemy>=2.0.34
+psycopg2-binary>=2.9.9
+polars>=1.6
+pandas>=2.2.2
+pyarrow>=17.0.0
