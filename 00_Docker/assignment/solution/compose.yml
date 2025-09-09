@@ -1,0 +1,41 @@
+
+services:
+  db:
+    container_name: db
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGUSER: ${POSTGRES_USER} # for the psql client
+      PGPASSWORD: ${POSTGRES_PASSWORD} # for the psql client
+      PGDATABASE: ${POSTGRES_DB} # for the psql client
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./pgtmp:/tmp
+
+  py:
+    container_name: py
+    image: python:3.12.5-bookworm
+    stdin_open: true
+    tty: true 
+    environment:
+      SCRIPTS_PATH: /scripts # you can use 'docker exec py bash -c "pip install -r \${SCRIPTS_PATH}/requirements.txt"' to install the requirements file. Note: generally, it is better to create a custom image with the required packages installed. Otherwise, each time the container is spun up, the requirements need to be pulled and reinstalled.
+      API_PATH: https://randomuser.me/api/
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB} 
+    volumes:
+      - ./py_app:/scripts
+
+  pgadmin:
+    container_name: pgadmin
+    image: elestio/pgadmin:REL-8_10
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80" # type localhost:5050 to your browser to access the UI
+
