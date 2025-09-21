@@ -383,16 +383,34 @@ ORDER BY f.CustomerKey, d.FullDate;
 
 ## 8. Handling Customer Moves in OLAP
 
-- **Problem in OLTP**: updating customer address overwrites history; past purchases show new city.
+- **Problem in OLTP**: updating customer address overwrites history; past purchases show new city, which is SCD Type 1. 
+SCD Type 1 (Overwrite – No History)
+
+Old Data
+
+| CustomerKey | FirstName | LastName | Segment | City    |
+| ----------- | --------- | -------- | ------- | ------- |
+| 1           | Alice     | Smith    | Regular | Tallinn |
+
+
+New Data 
+
+| CustomerKey | FirstName | LastName | Segment | City    |
+| ----------- | --------- | -------- | ------- | ------- |
+| 1           | Alice     | Smith    | Regular | Tartu   |
+
+The old city (Tallinn) is lost. Past purchases now appear under the new city.
+
+
 - **Solution in OLAP (SCD Type 2)**: maintain historical records with `ValidFrom` and `ValidTo`.
 
 Example:
 
-```sql
--- Original customer record
-CustomerKey | FirstName | LastName | Segment | City     | ValidFrom    | ValidTo
-1           | Alice     | Smith    | Regular | Tallinn  | 2025-01-01   | 9999-12-31
-```
+| CustomerKey | FirstName | LastName | Segment | City    | ValidFrom  | ValidTo    |
+| ----------- | --------- | -------- | ------- | ------- | ---------- | ---------- |
+| 1           | Alice     | Smith    | Regular | Tallinn | 2025-01-01 | 2025-09-20 |
+| 2           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
+
 
 <details>
 <summary>Solution</summary>
