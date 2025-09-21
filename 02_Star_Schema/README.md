@@ -384,7 +384,8 @@ ORDER BY f.CustomerKey, d.FullDate;
 ## 8. Handling Customer Moves in OLAP
 
 - **Problem in OLTP**: updating customer address overwrites history; past purchases show new city, which is SCD Type 1. 
-SCD Type 1 (Overwrite – No History)
+
+**SCD Type 1 (Overwrite – No History)**
 
 Old Data
 
