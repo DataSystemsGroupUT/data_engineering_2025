@@ -161,6 +161,24 @@ The compose.yml file remains exactly the same, so no changes are required.
 
 ## 6. Implementing in PostgreSQL
 
+We will use a star schema for supermarket analytics. The tables you need to create are:
+
+DimDate – contains dates and calendar attributes (year, month, day, day of week)
+
+DimStore – information about stores (name, city, region)
+
+DimProduct – product details (name, category, brand)
+
+DimSupplier – supplier information (name, contact info)
+
+DimCustomer – customer details with history (name, segment, city, valid from/to dates)
+
+DimPayment – types of payment (cash, card, voucher)
+
+FactSales – the central fact table recording each sale with quantity and amount, linking to all dimensions
+
+Each dimension provides context for the sales in FactSales, making it easy to analyze performance across different perspectives.
+
 <details>
 <summary>Solution</summary>
 
@@ -226,10 +244,19 @@ CREATE TABLE FactSales (
 </details>
 ---
 
-<details>
-<summary>Solution</summary>
+
 
 ## 6. Populate Dummy Data
+
+Before running analytical queries, we need some dummy data in our tables.
+This data simulates real supermarket operations and allows you to practice queries on FactSales and the dimensions.
+
+The dummy data includes: dates, stores, products, suppliers, customers, payment types, and sample sales.
+Once inserted, you can run the queries for daily sales, top products, average basket size, and more.
+
+
+<details>
+<summary>Solution</summary>
 
 ```sql
 -- DimDate
