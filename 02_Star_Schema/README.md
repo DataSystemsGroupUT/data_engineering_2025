@@ -316,6 +316,9 @@ VALUES
 
 ### 7.1 Daily and Monthly Sales by Store
 
+In this section, we will write queries to analyze sales performance at the store level. The focus is on aggregating sales data by day and by month to identify trends, peak periods, and store-wise performance.
+
+<details>
 <summary>Solution</summary>
 
 ```sql
@@ -383,14 +386,17 @@ ORDER BY f.CustomerKey, d.FullDate;
 - **Problem in OLTP**: updating customer address overwrites history; past purchases show new city.
 - **Solution in OLAP (SCD Type 2)**: maintain historical records with `ValidFrom` and `ValidTo`.
 
-<summary>Solution</summary>
-
 Example:
 
 ```sql
 -- Original customer record
 CustomerKey | FirstName | LastName | Segment | City     | ValidFrom    | ValidTo
 1           | Alice     | Smith    | Regular | Tallinn  | 2025-01-01   | 9999-12-31
+
+
+<details>
+<summary>Solution</summary>
+
 
 -- Customer moves to Tartu (SCD Type 2)
 -- Mark old record as not current
