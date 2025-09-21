@@ -416,6 +416,14 @@ FROM FactSales f
 JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
 GROUP BY CustomerName, c.City
 ORDER BY CustomerName, c.City;
+
+-- Query sales by city considering SCD
+SELECT c.City, SUM(f.SalesAmount) AS TotalSales
+FROM FactSales f
+JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
+GROUP BY c.City
+ORDER BY TotalSales DESC;
+
 ``` 
 
 </details>
@@ -425,40 +433,5 @@ ORDER BY CustomerName, c.City;
 - Historical purchases remain linked to the original city.
 - New purchases after the move link to the new city.
 - This ensures analytics correctly reflects sales by location and customer history.
-
-```sql
--- Customer moves to new city (SCD Type 2 example)
--- Mark old record as not current
-UPDATE DimCustomer SET ValidTo = CURRENT_DATE - INTERVAL '1 day' WHERE CustomerKey = 1 AND ValidTo = '9999-12-31';
-
--- Insert new record for new location
-INSERT INTO DimCustomer (FirstName, LastName, Segment, City, ValidFrom, ValidTo)
-VALUES ('Alice', 'Smith', 'Regular', 'Tartu', CURRENT_DATE, '9999-12-31');
-
--- Now new purchases will reference the new CustomerKey
-INSERT INTO FactSales (DateKey, StoreKey, ProductKey, SupplierKey, CustomerKey, PaymentKey, Quantity, SalesAmount)
-VALUES (3, 2, 2, 2, 3, 2, 4, 4*0.8);
-
--- Query sales by city considering SCD
-SELECT c.City, SUM(f.SalesAmount) AS TotalSales
-FROM FactSales f
-JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
-GROUP BY c.City
-ORDER BY TotalSales DESC;
-
--- Query sales by customer over time
-SELECT c.FirstName || ' ' || c.LastName AS CustomerName, d.FullDate, SUM(f.SalesAmount) AS DailySales
-FROM FactSales f
-JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
-JOIN DimDate d ON f.DateKey = d.DateKey
-GROUP BY CustomerName, d.FullDate
-ORDER BY CustomerName, d.FullDate;
-```
-
-**Explanation:**
-- The old customer record retains historical purchases with the original city.
-- A new record is created for the new city; any new purchases will reference this record.
-- Analytical queries correctly aggregate sales by city and customer over time.
-
 
 
