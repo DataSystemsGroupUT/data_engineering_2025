@@ -392,12 +392,12 @@ Example:
 -- Original customer record
 CustomerKey | FirstName | LastName | Segment | City     | ValidFrom    | ValidTo
 1           | Alice     | Smith    | Regular | Tallinn  | 2025-01-01   | 9999-12-31
-
+```
 
 <details>
 <summary>Solution</summary>
 
-
+```sql
 -- Customer moves to Tartu (SCD Type 2)
 -- Mark old record as not current
 UPDATE DimCustomer SET ValidTo = CURRENT_DATE - INTERVAL '1 day' WHERE CustomerKey = 1 AND ValidTo = '9999-12-31';
