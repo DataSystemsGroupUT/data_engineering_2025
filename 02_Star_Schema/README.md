@@ -6,6 +6,28 @@ In this session, we’ll shift to building an **analytical database** (OLAP) usi
 
 ---
 
+## Table of Contents (with Time Management)
+
+- [1. Analytical Needs (5 min)](#1-analytical-needs)  
+- [2. Why ER Diagrams Do Not Work Well for Analytics (10 min)](#2-why-er-diagrams-do-not-work-well-for-analytics)  
+- [3. Dimensional Modeling Concepts (25 min)](#3-dimensional-modeling-concepts)  
+  - [3.1 Identifying the Business Process (5 min)](#31-identifying-the-business-process)  
+  - [3.2 Defining the Grain of the Fact Table (5 min)](#32-defining-the-grain-of-the-fact-table)  
+  - [3.3 Identifying Dimensions (5 min)](#33-identifying-dimensions)  
+  - [3.4 Surrogate Keys & SCD (5 min)](#34-surrogate-keys--scd)  
+  - [3.5 DimDate and DimTime (5 min)](#35-dimdate-and-dimtime)  
+- [4. Task: Star Schema & OLAP Queries (10 min)](#4-task-star-schema--olap-queries)  
+- [5. Environment Setup (5 min)](#5-environment-setup)  
+- [6. Implementing in PostgreSQL (20 min)](#6-implementing-in-postgresql)  
+- [7. Management Queries (20 min)](#7-management-queries)  
+  - [7.1 Daily and Monthly Sales by Store (5 min)](#71-daily-and-monthly-sales-by-store)  
+  - [7.2 Sales by Product Category (5 min)](#72-sales-by-product-category)  
+  - [7.3 Top-Selling Products and Suppliers (5 min)](#73-top-selling-products-and-suppliers)  
+  - [7.4 Average Basket Size (5 min)](#74-average-basket-size-number-of-products-per-purchase)  
+- [8. Handling Customer Moves in OLAP (10 min)](#8-handling-customer-moves-in-olap)  
+
+___
+
 ## 1. Analytical Needs
 
 Management wants to analyze supermarket sales data.  
@@ -215,7 +237,8 @@ CREATE TABLE DimSupplier (
 );
 
 CREATE TABLE DimCustomer (
-    CustomerKey SERIAL PRIMARY KEY,
+    SurrogateKey SERIAL PRIMARY KEY,  -- unique per row/version
+    CustomerKey INT NOT NULL,         -- stable business key
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
     Segment VARCHAR(50),
@@ -223,6 +246,7 @@ CREATE TABLE DimCustomer (
     ValidFrom DATE,
     ValidTo DATE
 );
+
 
 CREATE TABLE DimPayment (
     PaymentKey SERIAL PRIMARY KEY,
@@ -289,10 +313,10 @@ VALUES
 ('BakeHouse Supplier', 'info@bakehouse.com');
 
 -- DimCustomer
-INSERT INTO DimCustomer (FirstName, LastName, Segment, City, ValidFrom, ValidTo)
+INSERT INTO DimCustomer (CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
 VALUES
-('Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
-('Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
+(1, 'Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
+(2, 'Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
 
 -- DimPayment
 INSERT INTO DimPayment (PaymentType)
@@ -407,10 +431,10 @@ The old city (Tallinn) is lost. Past purchases now appear under the new city.
 
 Example:
 
-| CustomerKey | FirstName | LastName | Segment | City    | ValidFrom  | ValidTo    |
-| ----------- | --------- | -------- | ------- | ------- | ---------- | ---------- |
-| 1           | Alice     | Smith    | Regular | Tallinn | 2025-01-01 | 2025-09-20 |
-| 2           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
+| SurrogateKey | CustomerKey | FirstName | LastName | Segment | City    | ValidFrom  | ValidTo    |
+| ------------ | ----------- | --------- | -------- | ------- | ------- | ---------- | ---------- |
+| 1            | 1           | Alice     | Smith    | Regular | Tallinn | 2025-01-01 | 2025-09-20 |
+| 2            | 1           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
 
 
 <details>
@@ -418,12 +442,16 @@ Example:
 
 ```sql
 -- Customer moves to Tartu (SCD Type 2)
--- Mark old record as not current
-UPDATE DimCustomer SET ValidTo = CURRENT_DATE - INTERVAL '1 day' WHERE CustomerKey = 1 AND ValidTo = '9999-12-31';
+-- 1. Mark old record as not current
+UPDATE DimCustomer
+SET ValidTo = CURRENT_DATE - INTERVAL '1 day'
+WHERE CustomerKey = 1
+  AND ValidTo = '9999-12-31';
 
--- Insert new record for new location
-INSERT INTO DimCustomer (FirstName, LastName, Segment, City, ValidFrom, ValidTo)
-VALUES ('Alice', 'Smith', 'Regular', 'Tartu', CURRENT_DATE, '9999-12-31');
+-- 2. Insert new record with new SurrogateKey
+INSERT INTO DimCustomer (SurrogateKey, CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
+VALUES (nextval('DimCustomer_SurrogateKey_seq'),  -- assumes a sequence or identity column
+        1, 'Alice', 'Smith', 'Regular', 'Tartu', CURRENT_DATE, '9999-12-31');
 
 -- FactSales automatically references the correct CustomerKey at transaction time
 INSERT INTO FactSales (DateKey, StoreKey, ProductKey, SupplierKey, CustomerKey, PaymentKey, Quantity, SalesAmount)
