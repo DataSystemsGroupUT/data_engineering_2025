@@ -437,9 +437,9 @@ Example:
 | CustomerKey | FirstName | LastName | Segment | City    | ValidFrom  | ValidTo    |
 | ----------- | --------- | -------- | ------- | ------- | ---------- | ---------- |
 | 1           | Alice     | Smith    | Regular | Tallinn | 2025-01-01 | 2025-09-20 |
-| 2           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
+| 3           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
 
-
+Because Bob is 2. 
 <details>
 <summary>Solution</summary>
 
