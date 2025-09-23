@@ -434,10 +434,10 @@ The old city (Tallinn) is lost. Past purchases now appear under the new city.
 
 Example:
 
-| SurrogateKey | CustomerKey | FirstName | LastName | Segment | City    | ValidFrom  | ValidTo    |
-| ------------ | ----------- | --------- | -------- | ------- | ------- | ---------- | ---------- |
-| 1            | 1           | Alice     | Smith    | Regular | Tallinn | 2025-01-01 | 2025-09-20 |
-| 2            | 1           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
+| CustomerKey | FirstName | LastName | Segment | City    | ValidFrom  | ValidTo    |
+| ----------- | --------- | -------- | ------- | ------- | ---------- | ---------- |
+| 1           | Alice     | Smith    | Regular | Tallinn | 2025-01-01 | 2025-09-20 |
+| 2           | Alice     | Smith    | Regular | Tartu   | 2025-09-21 | 9999-12-31 |
 
 
 <details>
