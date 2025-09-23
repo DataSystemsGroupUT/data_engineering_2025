@@ -404,6 +404,7 @@ New Data
 The old city (Tallinn) is lost. Past purchases now appear under the new city.
 
 
+
 - **Solution in OLAP (SCD Type 2)**: maintain historical records with `ValidFrom` and `ValidTo`.
 
 Example:
