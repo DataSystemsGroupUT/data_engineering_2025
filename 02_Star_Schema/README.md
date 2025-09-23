@@ -215,7 +215,6 @@ CREATE TABLE DimSupplier (
 );
 
 CREATE TABLE DimCustomer (
-    SurrogateKey SERIAL,  -- unique per row/version
     CustomerKey INT NOT NULL,         -- stable business key
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
@@ -290,10 +289,10 @@ VALUES
 ('BakeHouse Supplier', 'info@bakehouse.com');
 
 --dimcustomer
-INSERT INTO DimCustomer (surrogatekey, CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
+INSERT INTO DimCustomer (CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
 VALUES
-(nextval('DimCustomer_SurrogateKey_seq'),1, 'Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
-(nextval('DimCustomer_SurrogateKey_seq'),2, 'Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
+(1, 'Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
+(2, 'Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
 
 -- DimPayment
 INSERT INTO DimPayment (PaymentType)
@@ -309,6 +308,7 @@ VALUES
 (2, 2, 4, 4, 2, 2, 1, 1*1.5),
 (3, 1, 1, 1, 2, 1, 10, 10*1.2),
 (3, 1, 3, 3, 1, 2, 1, 1*2.5);
+
 ```
 </details>
 ---
@@ -373,11 +373,11 @@ LIMIT 5;
 ### 7.4 Average Basket Size (Number of Products per Purchase)
 
 ```sql
-SELECT f.CustomerKey, d.FullDate, AVG(f.Quantity) AS AvgBasketSize
+SELECT f.CustomerSurrKey, d.FullDate, AVG(f.Quantity) AS AvgBasketSize
 FROM FactSales f
 JOIN DimDate d ON f.DateKey = d.DateKey
-GROUP BY f.CustomerKey, d.FullDate
-ORDER BY f.CustomerKey, d.FullDate;
+GROUP BY f.CustomerSurrKey, d.FullDate
+ORDER BY f.CustomerSurrKey, d.FullDate;
 ```
 </details>
 ---
@@ -420,11 +420,13 @@ Example:
 ```sql
 -- Customer moves to Tartu (SCD Type 2)
 -- Mark old record as not current
-UPDATE DimCustomer SET ValidTo = CURRENT_DATE - INTERVAL '1 day' WHERE CustomerKey = 1 AND ValidTo = '9999-12-31';
+UPDATE DimCustomer
+SET ValidTo = CURRENT_DATE - INTERVAL '1 day'
+WHERE CustomerKey = 1
+  AND ValidTo = '9999-12-31';
 
--- Insert new record for new location
-INSERT INTO DimCustomer (FirstName, LastName, Segment, City, ValidFrom, ValidTo)
-VALUES ('Alice', 'Smith', 'Regular', 'Tartu', CURRENT_DATE, '9999-12-31');
+INSERT INTO DimCustomer (CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
+VALUES (3, 'Alice', 'Smith', 'Regular', 'Tartu', CURRENT_DATE, '9999-12-31');
 
 -- FactSales automatically references the correct CustomerKey at transaction time
 INSERT INTO FactSales (DateKey, StoreKey, ProductKey, SupplierKey, CustomerKey, PaymentKey, Quantity, SalesAmount)
@@ -433,7 +435,7 @@ VALUES (3, 2, 2, 2, 3, 2, 4, 4*0.8);
 -- Query to see sales by customer including moves
 SELECT c.FirstName || ' ' || c.LastName AS CustomerName, c.City, SUM(f.SalesAmount) AS TotalSales
 FROM FactSales f
-JOIN DimCustomer c ON f.CustomerKey = c.surrogatekey
+JOIN DimCustomer c ON f.CustomerKey = c.customerkey
 GROUP BY CustomerName, c.City
 ORDER BY CustomerName, c.City;
 

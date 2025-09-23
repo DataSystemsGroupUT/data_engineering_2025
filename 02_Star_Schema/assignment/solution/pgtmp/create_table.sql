@@ -28,7 +28,6 @@ CREATE TABLE DimSupplier (
 );
 
 CREATE TABLE DimCustomer (
-    SurrogateKey SERIAL,  -- unique per row/version
     CustomerKey INT NOT NULL,         -- stable business key
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
