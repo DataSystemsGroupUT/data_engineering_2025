@@ -27,11 +27,11 @@ VALUES
 ('DairyBest Supplier', 'sales@dairybest.com'),
 ('BakeHouse Supplier', 'info@bakehouse.com');
 
--- DimCustomer
-INSERT INTO DimCustomer (FirstName, LastName, Segment, City, ValidFrom, ValidTo)
+--dimcustomer
+INSERT INTO DimCustomer (surrogatekey, CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
 VALUES
-('Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
-('Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
+(nextval('DimCustomer_SurrogateKey_seq'),1, 'Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
+(nextval('DimCustomer_SurrogateKey_seq'),2, 'Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
 
 -- DimPayment
 INSERT INTO DimPayment (PaymentType)

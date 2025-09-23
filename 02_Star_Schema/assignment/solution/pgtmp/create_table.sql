@@ -28,7 +28,7 @@ CREATE TABLE DimSupplier (
 );
 
 CREATE TABLE DimCustomer (
-    SurrogateKey SERIAL PRIMARY KEY,  -- unique per row/version
+    SurrogateKey SERIAL,  -- unique per row/version
     CustomerKey INT NOT NULL,         -- stable business key
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
@@ -49,7 +49,7 @@ CREATE TABLE FactSales (
     StoreKey INT REFERENCES DimStore(StoreKey),
     ProductKey INT REFERENCES DimProduct(ProductKey),
     SupplierKey INT REFERENCES DimSupplier(SupplierKey),
-    CustomerKey INT REFERENCES DimCustomer(CustomerKey),
+    CustomerKey INT,
     PaymentKey INT REFERENCES DimPayment(PaymentKey),
     Quantity INT,
     SalesAmount NUMERIC(10,2)
