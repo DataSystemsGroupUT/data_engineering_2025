@@ -97,4 +97,4 @@ NB! Remember to remove containers that have `restart: always` if you don't actua
 
 
 
-![Docker Meme](coker.jpg)
+![Docker Meme](docker.JPG)
