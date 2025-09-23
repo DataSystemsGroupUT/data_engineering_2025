@@ -94,3 +94,7 @@ Review the .yml file
 * Services
 
 NB! Remember to remove containers that have `restart: always` if you don't actually need them to be always running in the background!
+
+
+
+![Docker Meme](coker.jpg)
