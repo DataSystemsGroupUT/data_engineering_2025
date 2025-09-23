@@ -1,4 +1,6 @@
+DROP VIEW IF EXISTS fixed_coordinates;
 DROP TABLE IF EXISTS countries; 
+
 
 CREATE TABLE countries (
     id INTEGER PRIMARY KEY,

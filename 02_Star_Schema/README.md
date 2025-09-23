@@ -237,7 +237,8 @@ CREATE TABLE DimSupplier (
 );
 
 CREATE TABLE DimCustomer (
-    SurrogateKey SERIAL PRIMARY KEY,  -- unique per row/version
+
+    SurrogateKey SERIAL,  -- unique per row/version
     CustomerKey INT NOT NULL,         -- stable business key
     FirstName VARCHAR(50),
     LastName VARCHAR(50),
@@ -259,7 +260,7 @@ CREATE TABLE FactSales (
     StoreKey INT REFERENCES DimStore(StoreKey),
     ProductKey INT REFERENCES DimProduct(ProductKey),
     SupplierKey INT REFERENCES DimSupplier(SupplierKey),
-    CustomerKey INT REFERENCES DimCustomer(CustomerKey),
+    CustomerKey INT,
     PaymentKey INT REFERENCES DimPayment(PaymentKey),
     Quantity INT,
     SalesAmount NUMERIC(10,2)
@@ -312,11 +313,13 @@ VALUES
 ('DairyBest Supplier', 'sales@dairybest.com'),
 ('BakeHouse Supplier', 'info@bakehouse.com');
 
--- DimCustomer
-INSERT INTO DimCustomer (CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
+  
+--dimcustomer
+INSERT INTO DimCustomer (surrogatekey, CustomerKey, FirstName, LastName, Segment, City, ValidFrom, ValidTo)
 VALUES
-(1, 'Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
-(2, 'Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
+(nextval('DimCustomer_SurrogateKey_seq'),1, 'Alice', 'Smith', 'Regular', 'Tallinn', '2025-01-01', '9999-12-31'),
+(nextval('DimCustomer_SurrogateKey_seq'),2, 'Bob', 'Jones', 'VIP', 'Tartu', '2025-01-01', '9999-12-31');
+
 
 -- DimPayment
 INSERT INTO DimPayment (PaymentType)
@@ -460,7 +463,7 @@ VALUES (3, 2, 2, 2, 3, 2, 4, 4*0.8);
 -- Query to see sales by customer including moves
 SELECT c.FirstName || ' ' || c.LastName AS CustomerName, c.City, SUM(f.SalesAmount) AS TotalSales
 FROM FactSales f
-JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
+JOIN DimCustomer c ON f.CustomerKey = c.surrogatekey
 GROUP BY CustomerName, c.City
 ORDER BY CustomerName, c.City;
 
