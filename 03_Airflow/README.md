@@ -240,7 +240,41 @@ The DAG file is provided in the `solution/` folder.
 Once Airflow is running, copy it into the `airflow/dags/` directory. First time it does not automatically detect the dag, you need to run airflow init. 
 
 ```airflow db init```
-Or click run for airflow-init service in the running container from Dcoker Desktop 
+Or click run for airflow-init service in the running container from Docker Desktop 
+
+
+### Extension of Assignment — Order Trigger
+
+This part builds on the **Price Trend Analyzer** DAG and introduces event-driven orchestration using Airflow sensors.  
+
+Once the first DAG generates an order JSON file (in `/tmp/data/orders`), this second DAG should automatically detect it and trigger a follow-up workflow to **push the order to an external API**.  
+
+#### Requirements
+
+1. **File Sensor**  
+   - Use an Airflow `FileSensor` to continuously monitor the directory for new JSON files created by the `price_trend_analyzer` DAG.  
+   - When a new file is detected, the DAG should start execution automatically.
+
+2. **Push to Order API**  
+   - Read the JSON payload and send it to the provided **Order API** endpoint.  
+   - API credentials and access details are available in the forum.
+
+3. **Error Handling & Retry Logic**  
+   - Occasionally, the API may return a `503 Service Unavailable` error.  
+   - In such cases, wait **5 seconds** before retrying.  
+   - Retry up to **3 times** before marking the request as failed.
+
+4. **Database Logging**  
+   - All requests and responses (successful or failed) must be logged into the `orders_log` table in the `prices-db`.  
+   - Log fields should include:  
+     - `payload` (JSON content sent)  
+     - `status` (e.g., *success*, *failed*)  
+     - `response` (API response body or error message)
+
+#### 🧠 Goal
+
+This exercise demonstrates **event-driven DAG triggering**, **sensor-based workflows**, and **robust API interaction with retry logic** — key concepts in production-grade data pipelines.
+
 
 ### Discussion Pointers
 
