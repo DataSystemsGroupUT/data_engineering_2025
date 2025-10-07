@@ -228,10 +228,21 @@ Written as a JSON file under /tmp/data/orders/
 
 Logged into the orders_log table for auditability.
 
-🕒 DAG Schedule
+### DAG Schedule
 
-The DAG runs every minute (*/1 * * * *), simulating continuous market monitoring.
-## Discussion Pointers
+The DAG runs every minute (`*/1 * * * *`), simulating continuous BTC market monitoring and analysis.
+It fetches simulated price data, calculates a 15-minute rolling average, and logs potential Buy or Sell triggers.
+
+Airflow automatically manages backfilling, meaning if the DAG was paused or Airflow was down, it can retroactively execute any missed runs to ensure data continuity.
+This is especially useful in production pipelines where historical data consistency matters.
+
+The DAG file is provided in the `solution/` folder.
+Once Airflow is running, copy it into the `airflow/dags/` directory. First time it does not automatically detect the dag, you need to run airflow init. 
+
+```airflow db init```
+Or click run for airflow-init service in the running container from Dcoker Desktop 
+
+### Discussion Pointers
 
 * Why batch scheduling still matters in modern data pipelines.
 
