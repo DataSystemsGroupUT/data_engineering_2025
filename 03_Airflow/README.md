@@ -28,6 +28,9 @@ Workflows are defined as **Directed Acyclic Graphs (DAGs)** written in Python, g
 - **Task Sensors:** Wait for events (like file creation, API responses, or DB updates) before triggering downstream tasks.
 
 ---
+### Architecture 
+
+[![Apache Airflow Logo]([https://en.wikipedia.org/wiki/Apache_Airflow#/media/File:AirflowLogo.svg](https://airflow.apache.org/docs/apache-airflow/stable/_images/diagram_basic_airflow_architecture.png)]([https://airflow.apache.org](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/overview.html)
 
 ## Advanced Capabilities
 
