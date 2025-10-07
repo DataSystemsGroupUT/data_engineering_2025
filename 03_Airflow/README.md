@@ -73,7 +73,7 @@ This project includes a ready-to-run Docker Compose setup with:
 Drawn in board. 
 <pre>
 03_Airflow/
-├── docker-compose.yml
+├── compose.yml
 ├── solution/
 │   ├── price_trend_analyzer.py
 │   └── create_tables.sql
