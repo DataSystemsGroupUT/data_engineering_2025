@@ -307,6 +307,50 @@ Once the first DAG generates an order JSON file (in `/tmp/data/orders`), this se
      - `status` (e.g., *success*, *failed*)  
      - `response` (API response body or error message)
 
+This part requires use of Airflow sensor. 
+
+### 🛰️ Airflow Sensors — Waiting for External Events
+
+**Sensors** in Apache Airflow are *special operators* that **wait for a condition to be true** before allowing downstream tasks to continue.
+
+They are useful when your pipeline depends on **external events or data availability** — for example:
+- Waiting for a file to appear in a folder (e.g., on S3 or local filesystem)
+- Waiting for a table or partition to be ready in a database
+- Waiting for another DAG or task to finish
+
+#### 🧩 How Sensors Work
+
+A sensor is just like any other operator but runs in a *loop*, periodically checking a condition.
+
+```python
+from airflow.sensors.filesystem import FileSensor
+
+wait_for_file = FileSensor(
+    task_id="wait_for_btc_order_file",
+    fs_conn_id="fs_default",
+    filepath="/tmp/data/orders/order.json",
+    poke_interval=30,  # check every 30 seconds
+    timeout=600,       # give up after 10 minutes
+)
+```
+
+#### 🧩🧩 Resource efficiency
+
+Default mode ("poke"): blocks the worker slot while waiting.
+
+Recommended: mode="reschedule": releases the slot between checks → frees resources.
+
+Example:
+```python
+wait_for_btc_order_file = FileSensor(
+    task_id="wait_for_btc_order_file",
+    filepath="/tmp/data/orders/order.json",
+    mode="reschedule",
+    poke_interval=30,
+    timeout=600
+)
+```
+
 #### 🧠 Goal
 
 This exercise demonstrates **event-driven DAG triggering**, **sensor-based workflows**, and **robust API interaction with retry logic** — key concepts in production-grade data pipelines.
