@@ -88,14 +88,15 @@ This project includes a ready-to-run Docker Compose setup with:
 ### Project Structure
 
 Drawn in board. 
-
+<pre> \`\`\` 
 03_Airflow/
-├── docker-compose.yml           # Compose file to start Airflow, Postgres, Redis, pgAdmin
+├── docker-compose.yml
 ├── solution/
-│   ├── price_trend_analyzer.py  # The DAG script
-│   └── create_tables.sql        # SQL file to create all required tables
+│   ├── price_trend_analyzer.py
+│   └── create_tables.sql
 └── airflow/
-    └── dags/                    # Airflow looks here for DAGs
+    └── dags/ 
+\`\`\` </pre>
 
 
 
