@@ -61,22 +61,6 @@ Despite its popularity, **Airflow isn’t always the right tool** for every orch
 
 ---
 
-## Practice Assignment: BTC Price Analyzer
-
-This hands-on assignment demonstrates a real-world use case:
-tracking Bitcoin prices, calculating a rolling average, and triggering buy/sell orders based on market conditions.
-
-### 📈 DAG: `price_trend_analyzer`
-1. Fetches BTC price periodically (e.g., every minute) from CoinGecko API (no authentication required).
-2. Stores it in a dedicated Postgres database (`prices-db`) in `btc_prices` table.
-3. Computes 15-minute rolling average and stores in `rolling_averages`.
-4. Makes a decision:
-   - **BUY** if the price drops below the rolling average.
-   - **SELL** if the price exceeds the rolling average.
-5. Logs all results and decisions into the `orders` table.
-
----
-
 ## 🛠️ Setting Up Airflow with Docker Compose
 
 This project includes a ready-to-run Docker Compose setup with:
@@ -128,7 +112,6 @@ Password: airflow
 
 ---
 
-
 ## Credentials
 
 | Component | Username | Password | Port |
@@ -152,6 +135,23 @@ Connecting `prices-db` through PgAdmin
 | **Maintenance database** | `prices_db`                                          |
 | **Username**             | `prices_user`                                        |
 | **Password**             | `prices_pass`                                        |
+
+---
+
+
+## Practice Assignment: BTC Price Analyzer
+
+This hands-on assignment demonstrates a real-world use case:
+tracking Bitcoin prices, calculating a rolling average, and triggering buy/sell orders based on market conditions.
+
+### 📈 DAG: `price_trend_analyzer`
+1. Fetches BTC price periodically (e.g., every minute) from CoinGecko API (no authentication required).
+2. Stores it in a dedicated Postgres database (`prices-db`) in `btc_prices` table.
+3. Computes 15-minute rolling average and stores in `rolling_averages`.
+4. Makes a decision:
+   - **BUY** if the price drops below the rolling average.
+   - **SELL** if the price exceeds the rolling average.
+5. Logs all results and decisions into the `orders` table.
 
 ---
 
