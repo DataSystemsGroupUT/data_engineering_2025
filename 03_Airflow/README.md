@@ -1,114 +1,195 @@
-# BTC Price Trend Analyzer
+# BTC Price Analyzer — Airflow Practice Assignment
 
-This setup runs **Airflow** with a separate **Postgres database** to track Bitcoin prices and generate buy/sell alerts.
+## 🧭 Table of Contents
+| Section | Duration | Description |
+|----------|-----------|-------------|
+| 1. Introduction to Apache Airflow | 5 mins | Overview of Airflow and its use in data engineering |
+| 2. Discussion: When (and When Not) to Use Airflow | 10 mins | Advanced discussion of Airflow pros & cons |
+| 3. Setting up Airflow Environment | 20 mins | Step-by-step setup using Docker Compose |
+| 4. Assignment: BTC Price Analyzer DAG | 1 hour | Hands-on project with Postgres integration |
+| 5. Wrap-up and Q&A | 10 mins | Summary and troubleshooting |
+
+---
+
+## 🚀 Introduction to Apache Airflow
+
+[![Apache Airflow Logo](https://airflow.apache.org/docs/apache-airflow/stable/_images/pin_large.png)](https://airflow.apache.org)
+
+**Apache Airflow** is an open-source platform designed to **author, schedule, and monitor data pipelines**.  
+Workflows are defined as **Directed Acyclic Graphs (DAGs)** written in Python, giving engineers full control and flexibility over task orchestration.
+
+### ✨ Core Features
+- **Python-based DAGs:** Define complex workflows programmatically with dependencies and conditions.
+- **Dynamic Scheduling:** Trigger workflows at fixed intervals, based on events, or manually.
+- **Rich UI & Monitoring:** Visualize DAG runs, dependencies, and task logs in real time.
+- **XComs & Task Communication:** Share small data between tasks.
+- **Retry & SLA Management:** Robust handling of task failures and performance alerts.
+- **Plugins & Extensibility:** Integrate with AWS, GCP, Databricks, Spark, or any custom operator.
+- **Task Sensors:** Wait for events (like file creation, API responses, or DB updates) before triggering downstream tasks.
+
+---
+
+## Advanced Capabilities
+
+- **Dynamic DAG Generation:** DAGs can be generated dynamically at runtime using Python logic.
+- **Task Groups & Dependencies:** Simplify DAG readability and structure.
+- **Kubernetes Executor:** Scales task execution across a Kubernetes cluster.
+- **REST API:** Allows external services or CI/CD pipelines to trigger and monitor workflows programmatically.
+- **Secrets Backend Integration:** Securely manage credentials via AWS Secrets Manager, HashiCorp Vault, etc.
+- **Airflow Smart Sensors:** Efficiently handle thousands of waiting sensors without overloading the scheduler.
+
+---
+
+## Disadvantages and Industry Trade-offs
+
+Despite its popularity, **Airflow isn’t always the right tool** for every orchestration need:
+
+### Disadvantages
+- **Operational Overhead:** Requires maintaining a scheduler, metadata DB, and workers — not ideal for small workloads.
+- **Scaling Challenges:** The Celery/Kubernetes executors require additional configuration to scale reliably.
+- **Latency:** Airflow is **not real-time** — designed for batch or scheduled pipelines, not streaming.
+- **Complex Debugging:** Failures in dynamic DAGs or multi-dependency tasks can be difficult to trace.
+- **Version Drift:** Upgrading across Airflow versions can break DAG compatibility.
+- **Limited Local Development Experience:** DAG testing locally can be slow due to scheduler reliance.
+
+### 💡 When Airflow Might *Not* Be Ideal
+- For **low-latency or event-driven** data pipelines → use **Prefect**, **Dagster**, or **dbt Cloud**.
+- For **microservice orchestration** → tools like **Temporal**, **AWS Step Functions**, or **Argo Workflows** may fit better.
+
+---
+
+## Practice Assignment: BTC Price Analyzer
+
+This hands-on assignment demonstrates a real-world use case:
+tracking Bitcoin prices, calculating a rolling average, and triggering buy/sell orders based on market conditions.
+
+### 📈 DAG: `price_trend_analyzer`
+1. Fetches BTC price periodically (e.g., every minute) from CoinGecko API (no authentication required).
+2. Stores it in a dedicated Postgres database (`prices-db`) in `btc_prices` table.
+3. Computes 15-minute rolling average and stores in `rolling_averages`.
+4. Makes a decision:
+   - **BUY** if the price drops below the rolling average.
+   - **SELL** if the price exceeds the rolling average.
+5. Logs all results and decisions into the `orders` table.
+
+---
+
+## 🛠️ Setting Up Airflow with Docker Compose
+
+This project includes a ready-to-run Docker Compose setup with:
+- Airflow webserver
+- Airflow scheduler
+- Two Postgres databases
+- Optional pgAdmin for database management
+
+### Project Structure
+
+Drawn in board. 
+
+03_Airflow/
+├── docker-compose.yml           # Compose file to start Airflow, Postgres, Redis, pgAdmin
+├── solution/
+│   ├── price_trend_analyzer.py  # The DAG script
+│   └── create_tables.sql        # SQL file to create all required tables
+└── airflow/
+    └── dags/                    # Airflow looks here for DAGs
+
+
 
 ---
 
 ## Services
 
-* **airflow-db**:
-  Postgres database used to store Airflow metadata (DAGs, task instances, users). Credentials (from `docker-compose.yml`):
-
-  * **User:** `airflow`
-  * **Password:** `airflow`
-  * **Database:** `airflow`
-  * **Host / Port (from host):** `localhost:5432`
-
-* **prices-db**:
-  A separate Postgres database dedicated to storing Bitcoin price data, rolling averages, and order logs. Credentials:
-
-  * **User:** `prices_user`
-  * **Password:** `prices_pass`
-  * **Database:** `prices_db`
-  * **Host / Port (from host):** `localhost:5433`
-
-* **pgadmin**:
-  Web-based management UI for Postgres databases. Use it to connect to both `airflow-db` and `prices-db` for inspection and running ad-hoc queries. Default login (from `docker-compose.yml`):
-
-  * **Email:** `admin@example.com`
-  * **Password:** `admin`
-  * **URL:** `http://localhost:5050`
-
-* **airflow-webserver**:
-  Airflow’s web interface, where you can view DAGs, monitor task progress, trigger DAGs manually, and inspect logs. Accessible on port `8080`.
-
-* **airflow-scheduler**:
-  Background service responsible for executing scheduled DAGs. It monitors DAG definitions, queues tasks, and ensures workflows run according to schedule.
+| Service | Description |
+|----------|--------------|
+| **airflow-db** | Postgres database for Airflow metadata. Stores DAG runs, task instances, and logs. |
+| **prices-db** | Dedicated Postgres database for BTC price tracking, rolling averages, and order logs. Keeps data clean and separate from Airflow metadata. |
+| **pgadmin** | Web UI to browse and manage databases. Accessible via browser. |
+| **airflow-webserver** | Web interface for monitoring and managing Airflow DAGs. |
+| **airflow-scheduler** | Core service responsible for parsing and executing DAGs based on schedule intervals. |
 
 ---
 
 ## How to Run
-
-1. Start services:
-
-```bash
+# Initialize the environment
 docker-compose up -d
-```
 
-2. Wait for **airflow-init** to finish (initializes Airflow DB and admin user).
+# Access Airflow UI
+http://localhost:8080
 
-3. Access Airflow UI: [http://localhost:8080](http://localhost:8080)
+# Login credentials
+Username: airflow
+Password: airflow
+---
 
-   * Username: `airflow`
-   * Password: `airflow`
 
-4. Place DAG in `./dags` folder (already included: `price_trend_analyzer.py`).
+## Credentials
 
-5. JSON order files will be written to: `./data/orders`.
+| Component | Username | Password | Port |
+|------------|-----------|-----------|------|
+| **airflow-db** | `airflow` | `airflow` | 5432 |
+| **prices-db** | `prices_user` | `prices_pass` | 5433 |
+| **pgAdmin** | `admin@example.com` | `admin` | 5050 |
+
+Access pgAdmin at:  
+[http://localhost:5050](http://localhost:5050)
+
+Access Airflow at:  
+[http://localhost:8080](http://localhost:8080)
+
+Connecting `prices-db` through PgAdmin
+
+| Field                    | Value                                                |
+| ------------------------ | ---------------------------------------------------- |
+| **Host name / address**  | `prices-db` *(use service name from docker-compose)* |
+| **Port**                 | `5432`                                               |
+| **Maintenance database** | `prices_db`                                          |
+| **Username**             | `prices_user`                                        |
+| **Password**             | `prices_pass`                                        |
 
 ---
 
-## Price Trend Analyzer DAG
+## SQL Schema Setup
 
-* Fetches BTC price every 1 minute from CoinGecko API.
-* Stores price in `btc_prices` table.
-* Computes 15-minute rolling average and stores in `btc_rolling_avg`.
-* Triggers buy/sell alerts:
-
-  * **Buy**: if price was below rolling average for 3 minutes, now above.
-  * **Sell**: if price was above rolling average for 3 minutes, now below.
-* Logs triggered orders in `orders_log` and as JSON files.
-
----
-
-## Database Tables
-
-You can create the required tables in the **prices-db** database using the following SQL:
+You can initialize your `prices-db` with:
 
 ```sql
--- BTC Prices Table
+-- Database: prices_db
+-- Replace with: CREATE DATABASE prices_db; if needed
+
+-- Table to store raw BTC prices
 CREATE TABLE IF NOT EXISTS btc_prices (
-  id SERIAL PRIMARY KEY,
-  ts TIMESTAMP WITH TIME ZONE NOT NULL,
-  price NUMERIC(18,8) NOT NULL
+    id SERIAL PRIMARY KEY,
+    ts TIMESTAMP WITH TIME ZONE NOT NULL,
+    price NUMERIC(18,8) NOT NULL
 );
 
--- BTC Rolling Averages Table
+-- Table to store rolling averages
 CREATE TABLE IF NOT EXISTS btc_rolling_avg (
-  id SERIAL PRIMARY KEY,
-  ts TIMESTAMP WITH TIME ZONE NOT NULL,
-  rolling_avg NUMERIC(18,8) NOT NULL
+    id SERIAL PRIMARY KEY,
+    ts TIMESTAMP WITH TIME ZONE NOT NULL,
+    rolling_avg NUMERIC(18,8) NOT NULL
 );
 
--- Orders Log Table
+-- Table to log triggered orders
 CREATE TABLE IF NOT EXISTS orders_log (
-  id SERIAL PRIMARY KEY,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  payload JSONB,
-  response JSONB,
-  status VARCHAR(32)
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    payload JSONB,
+    response JSONB,
+    status VARCHAR(32)
 );
-```
+
 
 ---
 
-## Notes
 
-* Airflow logs: `./logs`
-* Ports:
+## Discussion Pointers
 
-  * Airflow UI: `8080`
-  * pgAdmin: `5050`
-  * Airflow DB: `5432`
-  * Prices DB: `5433`
-* JSON order files location: `./data/orders`
+* Why batch scheduling still matters in modern data pipelines.
+
+* How Airflow compares to Prefect and Dagster in orchestration.
+
+* When to replace task-based DAGs with event-based architectures.
+
+* Common scaling pitfalls and deployment best practices.
