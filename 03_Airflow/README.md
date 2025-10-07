@@ -29,6 +29,43 @@ Workflows are defined as **Directed Acyclic Graphs (DAGs)** written in Python, g
 
 ---
 ### Architecture 
+Apache Airflow follows a **modular architecture** with components that work together to schedule, execute, and monitor workflows (DAGs).
+
+#### 🧱 Core Components
+
+- **Webserver (UI)**  
+  A Flask-based web app that lets users view DAGs, trigger runs, monitor task status, and inspect logs.
+
+- **Scheduler**  
+  The brain of Airflow — it parses DAG definitions, schedules tasks, and sends them to the executor when their dependencies are met.
+
+- **Executor**  
+  Determines *how and where* tasks run.  
+  Examples:  
+  - `SequentialExecutor` (local, for testing)  
+  - `LocalExecutor` (parallel on one machine)  
+  - `CeleryExecutor` or `KubernetesExecutor` (distributed scale-out)
+
+- **Metadata Database**  
+  Stores DAG definitions, task states, connections, and logs.  
+  Typically runs on **Postgres** or **MySQL**.
+
+- **Worker(s)**  
+  Execute tasks as directed by the scheduler (only used in distributed executors like Celery/Kubernetes).
+
+- **Triggerer (for deferrable tasks)**  
+  Efficiently manages long waits (like sensors or async events) without blocking workers.
+
+- **DAGs Folder**  
+  Directory where Airflow scans for Python scripts defining DAGs.
+
+#### 🔄 How It Works (High-Level Flow)
+
+1. **DAG parsing** – The scheduler scans the DAG folder and loads all defined workflows into the metadata DB.  
+2. **Task scheduling** – Based on schedules or triggers, tasks are queued for execution.  
+3. **Execution** – The executor assigns tasks to workers (local or distributed).  
+4. **Tracking** – Task states and logs are stored in the metadata DB and shown in the web UI.
+
 
 [![Apache Airflow Logo](https://airflow.apache.org/docs/apache-airflow/stable/_images/diagram_basic_airflow_architecture.png)](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/overview.html)
 
