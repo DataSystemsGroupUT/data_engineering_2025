@@ -189,8 +189,48 @@ CREATE TABLE IF NOT EXISTS orders_log (
 ```
 ---
 
-## Assignment
+## DAG — Price Trend Analyzer
 
+The DAG (`price_trend_analyzer.py`) is located in the `solution/` folder.
+When setting up Airflow, you need to copy this file into the Airflow DAGs directory:
+
+```cp solution/price_trend_analyzer.py airflow/dags/```
+
+### DAG Overview
+
+This DAG simulates the process of tracking Bitcoin (BTC) price movements, calculating rolling averages, and generating buy/sell signals.
+
+It performs the following key tasks:
+
+- Fetch Latest BTC Price
+- Retrieves (or simulates) the latest BTC price at each scheduled interval.
+
+Store Price in Database
+Inserts the current timestamp and price into the btc_prices table.
+
+Compute Rolling Average
+Calculates a rolling average over the last 15 minutes and stores it in btc_rolling_avg.
+
+Analyze Price Trends
+Compares recent prices to detect upward or downward trends relative to the rolling average.
+
+Trigger Buy/Sell Orders
+If a signal is detected:
+
+A Buy order is generated when prices rise above the rolling average after being below it.
+
+A Sell order is generated when prices drop below the rolling average after being above it.
+
+Log Orders
+Each triggered order is:
+
+Written as a JSON file under /tmp/data/orders/
+
+Logged into the orders_log table for auditability.
+
+🕒 DAG Schedule
+
+The DAG runs every minute (*/1 * * * *), simulating continuous market monitoring.
 ## Discussion Pointers
 
 * Why batch scheduling still matters in modern data pipelines.
