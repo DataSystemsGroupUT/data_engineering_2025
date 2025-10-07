@@ -30,7 +30,7 @@ Workflows are defined as **Directed Acyclic Graphs (DAGs)** written in Python, g
 ---
 ### Architecture 
 
-[![Apache Airflow Logo]([https://en.wikipedia.org/wiki/Apache_Airflow#/media/File:AirflowLogo.svg](https://airflow.apache.org/docs/apache-airflow/stable/_images/diagram_basic_airflow_architecture.png)]([https://airflow.apache.org](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/overview.html)
+[![Apache Airflow Logo](https://airflow.apache.org/docs/apache-airflow/stable/_images/diagram_basic_airflow_architecture.png)](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/overview.html)
 
 ## Advanced Capabilities
 
