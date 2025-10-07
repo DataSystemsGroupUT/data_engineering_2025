@@ -13,16 +13,24 @@ API_URL = "https://example.com/api/orders"  # replace with real API
 
 def fetch_and_store_price(**ctx):
     ts = datetime.utcnow()
-    # Simulated BTC price fetch — replace with actual API call if needed
-    price = 123456.78
+    try:
+        response = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT")
+        price = float(response.json()["price"])
+        pg = PostgresHook(postgres_conn_id="prices_db")
+        # Insert into btc_prices
+        pg.run(
+            "INSERT INTO btc_prices (ts, price) VALUES (%s, %s)",
+            parameters=(ts, price)
+        )
+        print("Inserted BTC price into database successfully.")
 
-    pg = PostgresHook(postgres_conn_id="prices_db")
+    except requests.RequestException as e:
+        print(f"Error fetching BTC price: {e}")
+        raise
 
-    # 1) Insert into btc_prices
-    pg.run(
-        "INSERT INTO btc_prices (ts, price) VALUES (%s, %s)",
-        parameters=(ts, price)
-    )
+    except Exception as e:
+        print(f"Database insertion failed: {e}")
+        raise
 
     # 2) Compute rolling average over last 15 minutes
     cutoff = ts - timedelta(minutes=15)
