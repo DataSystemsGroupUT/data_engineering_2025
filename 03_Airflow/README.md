@@ -88,7 +88,7 @@ This project includes a ready-to-run Docker Compose setup with:
 ### Project Structure
 
 Drawn in board. 
-<pre> \`\`\` 
+<pre>
 03_Airflow/
 ├── docker-compose.yml
 ├── solution/
@@ -96,7 +96,7 @@ Drawn in board.
 │   └── create_tables.sql
 └── airflow/
     └── dags/ 
-\`\`\` </pre>
+</pre>
 
 
 
