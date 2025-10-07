@@ -13,7 +13,7 @@
 
 ## 🚀 Introduction to Apache Airflow
 
-[![Apache Airflow Logo](https://airflow.apache.org/docs/apache-airflow/stable/_images/pin_large.png)](https://airflow.apache.org)
+[![Apache Airflow Logo](https://en.wikipedia.org/wiki/Apache_Airflow#/media/File:AirflowLogo.svg)](https://airflow.apache.org)
 
 **Apache Airflow** is an open-source platform designed to **author, schedule, and monitor data pipelines**.  
 Workflows are defined as **Directed Acyclic Graphs (DAGs)** written in Python, giving engineers full control and flexibility over task orchestration.
