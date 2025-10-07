@@ -168,7 +168,7 @@ Connecting `prices-db` through PgAdmin
 | ------------------------ | ---------------------------------------------------- |
 | **Host name / address**  | `prices-db` *(use service name from docker-compose)* |
 | **Port**                 | `5432`                                               |
-| **Maintenance database** | `prices_db`                                          |
+| **Maintenance database** | `prices-db`                                          |
 | **Username**             | `prices_user`                                        |
 | **Password**             | `prices_pass`                                        |
 
@@ -196,8 +196,8 @@ tracking Bitcoin prices, calculating a rolling average, and triggering buy/sell 
 You can initialize your `prices-db` with:
 
 ```sql
--- Database: prices_db
--- Replace with: CREATE DATABASE prices_db; if needed
+-- Database: prices-db
+-- Replace with: CREATE DATABASE prices-db; if needed
 
 -- Table to store raw BTC prices
 CREATE TABLE IF NOT EXISTS btc_prices (
