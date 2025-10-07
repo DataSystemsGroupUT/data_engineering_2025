@@ -1,0 +1,131 @@
+version: "3.9"
+
+services:
+  # --- Airflow metadata database ---
+  airflow-db:
+    container_name: airflow-db
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+      PGUSER: airflow
+      PGPASSWORD: airflow
+      PGDATABASE: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata_airflow:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      retries: 5
+    restart: always
+
+  # --- Separate Postgres for price tracking ---
+  prices-db:
+    container_name: prices-db
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: prices_user
+      POSTGRES_PASSWORD: prices_pass
+      POSTGRES_DB: prices_db
+      PGUSER: prices_user
+      PGPASSWORD: prices_pass
+      PGDATABASE: prices_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pgdata_prices:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prices_user -d prices_db"]
+      interval: 10s
+      retries: 5
+    restart: always
+
+  # --- pgAdmin UI for both databases ---
+  pgadmin:
+    container_name: pgadmin
+    image: elestio/pgadmin:REL-8_10
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      CSRF_ENABLED: "False"
+    ports:
+      - "5050:80"
+    depends_on:
+      - airflow-db
+      - prices-db
+
+  # --- Airflow Webserver ---
+  airflow-webserver:
+    image: apache/airflow:2.8.1
+    container_name: airflow-webserver
+    command: webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+      AIRFLOW_CONN_PRICES_DB: postgresql+psycopg2://prices_user:prices_pass@prices-db:5432/prices_db
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./data/orders:/tmp/data/orders
+    depends_on:
+      - airflow-init
+      - airflow-db
+      - prices-db
+    restart: always
+
+  # --- Airflow Scheduler ---
+  airflow-scheduler:
+    image: apache/airflow:2.8.1
+    container_name: airflow-scheduler
+    command: scheduler
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+      AIRFLOW_CONN_PRICES_DB: postgresql+psycopg2://prices_user:prices_pass@prices-db:5432/prices_db
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+    depends_on:
+      - airflow-init
+      - airflow-db
+      - prices-db
+    restart: always
+
+  # --- Airflow DB initialization & user setup ---
+  airflow-init:
+    image: apache/airflow:2.8.1
+    container_name: airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db init
+        airflow users create \
+          --username airflow \
+          --password airflow \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+    depends_on:
+      - airflow-db
+      - prices-db
+    restart: "no"
+
+volumes:
+  pgdata_airflow:
+  pgdata_prices:
