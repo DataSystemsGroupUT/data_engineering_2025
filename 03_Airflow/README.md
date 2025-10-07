@@ -116,14 +116,16 @@ Drawn in board.
 
 ## How to Run
 # Initialize the environment
+
+```
 docker-compose up -d
+```
 
-# Access Airflow UI
-http://localhost:8080
+## Login credentials
 
-# Login credentials
 Username: airflow
 Password: airflow
+
 ---
 
 
@@ -184,9 +186,10 @@ CREATE TABLE IF NOT EXISTS orders_log (
     status VARCHAR(32)
 );
 
-
+```
 ---
 
+## Assignment
 
 ## Discussion Pointers
 
