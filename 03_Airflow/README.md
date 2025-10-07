@@ -34,9 +34,8 @@ Workflows are defined as **Directed Acyclic Graphs (DAGs)** written in Python, g
 
 ## Advanced Capabilities
 
-- **Dynamic DAG Generation:** DAGs can be generated dynamically at runtime using Python logic.
+- **Dynamic DAG Generation:** DAGs can be generated dynamically at runtime using Python & Yaml templating
 - **Task Groups & Dependencies:** Simplify DAG readability and structure.
-- **Kubernetes Executor:** Scales task execution across a Kubernetes cluster.
 - **REST API:** Allows external services or CI/CD pipelines to trigger and monitor workflows programmatically.
 - **Secrets Backend Integration:** Securely manage credentials via AWS Secrets Manager, HashiCorp Vault, etc.
 - **Airflow Smart Sensors:** Efficiently handle thousands of waiting sensors without overloading the scheduler.
