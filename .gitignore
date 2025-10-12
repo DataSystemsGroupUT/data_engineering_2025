@@ -1,1 +1,3 @@
 .DS_Store
+05_ClickHouse/clickhouse_data/uuid
+05_ClickHouse/*

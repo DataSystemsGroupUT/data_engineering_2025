@@ -68,6 +68,7 @@ First, create a main folder for this practice session and structure it exactly a
 ```
 05_ClickHouse/
 ├── compose.yml
+├── README.md
 └── sample_data/
     ├── dim_customer.csv
     ├── dim_date.csv
@@ -76,6 +77,12 @@ First, create a main folder for this practice session and structure it exactly a
     ├── dim_store.csv
     ├── dim_supplier.csv
     └── fact_sales.csv
+└── sql/
+    ├── 01_create_db_and_tables.sql
+    ├── 02_load_queries.sql
+    ├── 03_scd2_and_queries.sql
+    ├── 04_analytical_questions.sql
+
 ```
 
 ### **Step 3.2: Create the `compose.yml` File**
