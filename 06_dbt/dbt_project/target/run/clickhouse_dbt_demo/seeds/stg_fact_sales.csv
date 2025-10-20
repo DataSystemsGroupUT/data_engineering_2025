@@ -1,0 +1,26 @@
+
+    
+    
+    
+    create table `default`.`stg_fact_sales` 
+   ("SaleID" Int32,"DateKey" Int32,"StoreKey" Int32,"ProductKey" Int32,"SupplierKey" Int32,"CustomerKey" Int32,"PaymentKey" Int32,"Quantity" Int32,"SalesAmount" Float32,"FullDate" Date)
+    
+  engine = MergeTree()
+    
+      order by (tuple())
+    
+  ;
+    -- dbt seed --
+    
+  
+  
+
+  
+    
+
+    
+  
+
+
+;
+  

@@ -1,0 +1,18 @@
+
+    
+    
+    truncate table `default`.`stg_dim_supplier`;
+    -- dbt seed --
+    
+  
+  
+
+  
+    
+
+    
+  
+
+
+;
+  

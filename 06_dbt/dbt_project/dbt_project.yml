@@ -1,0 +1,10 @@
+name: clickhouse_dbt_demo
+version: "1.0.0"
+profile: clickhouse_dbt_demo  # must match the top key in profiles.yml
+model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target"]
+
+models:
+  clickhouse_dbt_demo:
+    +materialized: table

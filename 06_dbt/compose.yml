@@ -1,0 +1,43 @@
+services:
+  clickhouse-server:
+    # ClickHouse analytical database server
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse-server
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+
+    ports:
+      - "8123:8123" # HTTP interface
+      - "9000:9000" # Native client interface
+    volumes:
+      # This makes our local CSVs available inside the container.
+      - ./sample_data:/var/lib/clickhouse/user_files
+      # Mount local SQL files to run them via the ClickHouse client.
+      - ./sql:/sql
+    # Best practice from official docs to prevent "too many open files" errors.
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123/ping"]
+      interval: 5s
+      retries: 20
+
+  dbt:
+    # dbt container for building and testing ClickHouse models
+    build:
+      context: .               # Build context is the current directory
+      dockerfile: Dockerfile   # Use the Dockerfile in this directory to build dbt image
+    container_name: dbt
+    depends_on:
+      - clickhouse-server      # Ensure ClickHouse starts before dbt
+    volumes:
+      - ./sample_data:/var/lib/clickhouse/user_files # Shared folder for input files
+      - ./sql:/sql                                  # Shared SQL scripts
+      - ./dbt_project:/dbt                                  # Mount local dbt project directory
+    working_dir: /dbt          # Set dbt project directory as the working directory
+    tty: true                  # Keep container running for interactive dbt commands
