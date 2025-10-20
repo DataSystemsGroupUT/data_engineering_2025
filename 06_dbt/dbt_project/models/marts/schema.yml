@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: fact_sales
+    description: "Fact table of all sales transactions"
+    columns:
+      - name: SaleID
+        description: "Unique identifier for each sale"
+        tests:
+          - not_null
+      - name: CustomerKey
+        description: "Reference to the customer dimension"
+        tests:
+          - not_null
+      - name: ProductKey
+        description: "Reference to the product dimension"
+        tests:
+          - not_null
+      - name: StoreKey
+        description: "Reference to the store dimension"
+        tests:
+          - not_null
+      - name: SalesAmount
+        description: "Total amount of the sale"
+        tests:
+          - not_null
+      - name: FullDate
+        description: "Date of the sale"
+        tests:
+          - not_null

@@ -1,0 +1,11 @@
+clickhouse_dbt_demo:     # must match "profile" in dbt_project.yml
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      schema: default
+      host: clickhouse-server
+      port: 8123
+      user: default
+      password: ""
+      secure: false
