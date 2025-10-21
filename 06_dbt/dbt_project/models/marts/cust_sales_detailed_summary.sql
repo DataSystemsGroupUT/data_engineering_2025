@@ -1,4 +1,8 @@
-{{ config(materialized='incremental', unique_key='CustomerKey') }}
+{{ config(
+    materialized='incremental',
+    unique_key='CustomerKey',
+    incremental_strategy='append'
+) }}
 
 SELECT
     c.CustomerKey,
@@ -21,8 +25,7 @@ LEFT JOIN {{ ref('dim_store') }} AS s
     ON f.StoreKey = s.StoreKey
 
 {% if is_incremental() %}
-  -- Only include new sales since the last run
-  WHERE f.FullDate > (SELECT MAX(LastOrderDate) FROM {{ this }})
+WHERE f.FullDate > (SELECT max(LastOrderDate) FROM {{ this }})
 {% endif %}
 
 GROUP BY
