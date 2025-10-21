@@ -17,6 +17,7 @@
 * [11. Conclusion & Key Takeaways](#11-conclusion--key-takeaways)
 * [12. Appendix: Why DBT + ClickHouse](#12-appendix-why-dbt--clickhouse)
 
+
 ---
 
 ## 1. Introduction
