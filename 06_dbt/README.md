@@ -9,9 +9,10 @@
 - [5. Task 1: Setting up Models in DBT](#5-task-1-setting-up-models-in-dbt)
 - [6. Task 2: Running DBT Models and Validating Data](#6-task-2-running-dbt-models-and-validating-data)
 - [7. Task 3: Incremental Models and Data Updates](#7-task-3-incremental-models-and-data-updates)
-- [8. Task 4: SCD Type 2 with DBT](#8-task-4-scd-type-2-with-dbt)
-- [9. Conclusion & Key Takeaways](#9-conclusion--key-takeaways)
-- [10. Appendix: Why DBT + ClickHouse](#10-appendix-why-dbt--clickhouse)
+- [8. Task 4: Snapshot with DBT](#8-task-4-scd-type-2-with-dbt)
+- [9. Data Quality & Testing with DBT]
+- [10. Selectors]
+- [11. Appendix: Why DBT + ClickHouse](#10-appendix-why-dbt--clickhouse)
   - [Why use a Dockerfile instead of only Compose](#why-use-a-dockerfile-instead-of-only-compose)
   - [DBT vs Raw SQL: Conceptual Shift](#dbt-vs-raw-sql-conceptual-shift)
 
@@ -477,7 +478,7 @@ dbt test --selector all_models
 
 ---
 
-## 10. Appendix: Why DBT + ClickHouse
+## 11. Appendix: Why DBT + ClickHouse
 
 ### Why use a Dockerfile instead of only Compose
 
