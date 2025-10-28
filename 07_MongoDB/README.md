@@ -2,7 +2,8 @@
 MongoDB is a modern, document-oriented NoSQL database designed for flexibility and scalability.
 Unlike traditional relational databases that store data in tables and rows, MongoDB stores information in JSON-like documents — making it easier to handle unstructured or evolving data.
 
-![MongoDB Logo](https://upload.wikimedia.org/wikipedia/en/4/45/MongoDB-Logo.svg](https://studio3t.com/wp-content/uploads/2020/09/introduction-to-mongodb.png)
+![MongoDB Intro](https://studio3t.com/wp-content/uploads/2020/09/introduction-to-mongodb.png)
+
 
 
 ## 📘 Table of Contents
