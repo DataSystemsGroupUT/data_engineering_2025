@@ -198,7 +198,7 @@ docker exec -it mongodb mongoimport   --username admin   --password password   -
 ### Step 5.3: Verify Data
 
 ```bash
-docker exec -it mongodb mongosh -u admin -p pass --authenticationDatabase admin
+docker exec -it mongodb mongosh -u admin -p password --authenticationDatabase admin
 
 use shop
 db.products.find().pretty()
