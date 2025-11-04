@@ -27,7 +27,7 @@ services:
     container_name: duckdb_lab
     volumes:
       - ./sample_data:/lab/sample_data
-      - ./sql:/lab/sql
+      - ./scripts:/lab/scripts
     depends_on:
       - minio
       - iceberg_rest
