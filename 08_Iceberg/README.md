@@ -70,8 +70,6 @@ By the end of this lab, you will:
 │   ├── 01_duckdb_minio_setup.py
 │   ├── 02_pyiceberg_create_table.py
 │   └── 03_pyiceberg_time_travel.py
-├── sql/
-│   └── insert_data.sql
 └── README.md
 ```
 
