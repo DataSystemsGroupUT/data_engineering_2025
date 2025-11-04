@@ -35,6 +35,13 @@ services:
     tty: true
     environment:
       PYICEBERG_HOME: /lab/sample_data
+      PYICEBERG_CATALOG__REST__URI: http://iceberg_rest:8181/
+      PYICEBERG_CATALOG__REST__WAREHOUSE: s3://practice-bucket/
+      PYICEBERG_CATALOG__REST__IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+      PYICEBERG_CATALOG__REST__S3__ENDPOINT: http://minio:9000
+      PYICEBERG_CATALOG__REST__S3__ACCESS-KEY-ID: minioadmin
+      PYICEBERG_CATALOG__REST__S3__SECRET-ACCESS-KEY: minioadmin
+
     networks:
       - iceberg_network
 
