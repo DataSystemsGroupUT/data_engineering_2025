@@ -108,7 +108,7 @@ SELECT email FROM sec_demo.employees;
 
 ## 5. Task 2 — Data Masking
 
-Create a view `sec_demo.v_employees_masked` that masks PII/sensitive fields, then grant the role full select access to the view.
+Create a view `sec_demo.v_employees_masked` that masks PII/sensitive fields, then grant the junior analyst role full select access to the view.
 
 The required fields to be masked are email, phone, ssn, salary, birth_date:
 
