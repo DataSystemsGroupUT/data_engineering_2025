@@ -1,0 +1,32 @@
+services:
+  clickhouse-server-secpriv:
+  
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse-server-secpriv
+
+    environment:
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1 # https://clickhouse.com/docs/operations/settings/settings-users#access_management-user-setting
+      CLICKHOUSE_USER: admin
+      CLICKHOUSE_PASSWORD: admin_password
+
+    ports:
+      - "8123:8123" # HTTP interface
+      - "9000:9000" # Native client interface
+    volumes:
+      # NOTE: modify these paths as needed. E.g., you want to persist data somewhere else, you want to use your project data, etc.
+      
+      # This persists our database data on our local machine.
+      - clickhouse-data:/var/lib/clickhouse/
+      
+      # mount SQL to run them via client
+      - ./sql:/sql
+
+    # Best practice from official docs to prevent "too many open files" errors.
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+volumes:
+  clickhouse-data:
+
