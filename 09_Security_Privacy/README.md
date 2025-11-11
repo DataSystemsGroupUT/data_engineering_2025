@@ -39,8 +39,8 @@ PS: can you detect what are some aspects to improve, security-wise, in the compo
 
 ### Start and verify that it works
 
-`docker compose up -d`
-`docker exec -it clickhouse-server-secpriv clickhouse-client -u admin --password admin_password -q "SELECT version()"`
+`docker compose up -d`  
+`docker exec -it clickhouse-server-secpriv clickhouse-client -u admin --password admin_password -q "SELECT version()"`  
 _Note: modify the container name if needed in the above command_
 
 ### Seed data
