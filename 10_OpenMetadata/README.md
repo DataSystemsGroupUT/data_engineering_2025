@@ -9,7 +9,7 @@
 - [Task 3: Configure data quality tests](#task-3-configure-data-quality-tests)
 - [Task 4: Define Business Glossary terms](#task-4-define-business-glossary-terms)
 - [Task 5: Create data lineage](#task-5-create-data-lineage)
-- [Appendix: Environment, tips, documentation](#appendix-environment-tips-documentation)
+- [Appendix: Debugging, documentation](#appendix-debugging-documentation)
 
 ---
 
@@ -33,7 +33,7 @@ You will:
 
 ---
 
-## Task 0 – Check OpenMetadata UI
+## Task 0: Check OpenMetadata UI
 
 Use `docker compose up -d` to start the OpenMetadata services.  
 Note: this can take several minutes. 
@@ -48,7 +48,7 @@ Password - admin
 
 ---
 
-## Task 1 – Add ClickHouse connection
+## Task 1: Add ClickHouse connection
 
 In this task, you will register ClickHouse as a **Database Service** in OpenMetadata and ingest its metadata (schemas and tables).
 
@@ -165,7 +165,7 @@ You can see the logs in OpenMetadata UI, or login to the associated Airflow serv
 
 ---
 
-## Task 2 – Add table and column descriptions
+## Task 2: Add table and column descriptions
 
 Now that ClickHouse tables are visible in OpenMetadata, you will make them understandable for other people by adding **descriptions**.
 
@@ -204,7 +204,7 @@ A good way to self-check if descriptions are enough, ask yourself:
 
 ---
 
-## Task 3 – Configure data quality tests
+## Task 3: Configure data quality tests
 
 In this task, you will configure and run basic **data quality tests** on a ClickHouse table, directly from OpenMetadata.
 
@@ -254,7 +254,7 @@ The important outcome: you can define checks **without changing ClickHouse SQL**
 
 ---
 
-## Task 4 – Define Business Glossary terms
+## Task 4: Define Business Glossary terms
 
 Business Glossary helps align **business language** with the underlying data assets.
 
@@ -288,7 +288,7 @@ Business Glossary helps align **business language** with the underlying data ass
 
 ---
 
-## Task 5 – Create data lineage
+## Task 5: Create data lineage
 
 Data lineage shows **how data flows** between tables and systems. For this lab, you will create a simple **manual table-to-table lineage**.
 
@@ -322,9 +322,9 @@ Data lineage shows **how data flows** between tables and systems. For this lab, 
 
 ---
 
-## Appendix – Tips, documentation
+## Appendix: Debugging, documentation
 
-### Troubleshooting tips
+### Troubleshooting (debugging)
 
 - **OpenMetadata UI not loading**
   - Check container status:
