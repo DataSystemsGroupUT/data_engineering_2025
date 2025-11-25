@@ -27,8 +27,8 @@
 x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
 x-superset-volumes:
   &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
-  - ./docker:/app/docker
-  - ./superset-core:/app/superset-core
+  - ./docker:/app/docker # optionally comment me out if having bash/r error - will need to manually install clickhouse_connect on Superset container
+  - ./superset-core:/app/superset-core # optionally comment me out if having bash/r error - will need to manually install clickhouse_connect on Superset container
   - superset_home:/app/superset_home
 
 services:

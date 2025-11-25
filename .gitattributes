@@ -1,9 +1,10 @@
-# Force LF for scripts
-*.sh text eol=lf
+* text=auto
 
-# Optional but recommended
-*.py text eol=lf
-*.sql text eol=lf
-*.md text eol=lf
-*.yml text eol=lf
+*.sh   text eol=lf
+*.py   text eol=lf
+*.sql  text eol=lf
+*.yml  text eol=lf
 *.yaml text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.json text eol=lf
