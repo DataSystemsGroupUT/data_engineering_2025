@@ -61,7 +61,10 @@ Include ClickHouse service in the docker compose file. You can use the sample be
 <details>  
 <summary>Example addition to compose.yml</summary>  
 
+```  
+
 ### under services add
+
   clickhouse-server-viz:
     image: clickhouse/clickhouse-server
     container_name: clickhouse-server-viz
@@ -90,17 +93,21 @@ Include ClickHouse service in the docker compose file. You can use the sample be
 
   clickhouse-viz-data:
 
+```
+
 </details>  
 
 If you want to use the practice session data, (re)load the sample schema inside the ClickHouse container using the sql and csv files under `./sql` and `./sample_data`.
 
 <details>  
 <summary>Example scripts to run</summary>  
-```bash
+
+```bash  
 docker exec -it clickhouse-server-viz bash
 clickhouse-client --multiquery --queries-file=/sql/01_create_db_and_tables.sql  
 clickhouse-client --multiquery --queries-file=/sql/02_load_queries.sql 
-```
+```  
+
 </details>  
 
 
